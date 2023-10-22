@@ -71,8 +71,25 @@ const logout=(req,res)=>{
  return res.sendStatus(200)
 }
 
+const profile=async(req,res)=>{
+  const userFound=await pool.query(
+    "SELECT * FROM Usuario WHERE id=$1",
+    [req.user.id]
+  );
+
+  if (userFound.rows.length === 0) {
+    return res.status(400).json({ mensaje: "Usuario no encontrado." });
+  }
+  
+  return res.json({
+    id:userFound.rows[0].id,
+    ussername:userFound.rows[0].ussername
+  })
+}
+
 module.exports = {
   login,
   register,
-  logout
+  logout,
+  profile
 };
